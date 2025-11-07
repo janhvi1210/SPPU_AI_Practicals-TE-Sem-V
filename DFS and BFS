@@ -1,0 +1,51 @@
+# src/dfs_bfs.py
+from collections import deque
+from typing import Dict, List, Set, Any
+
+def dfs_recursive(graph: Dict[Any, List[Any]], start: Any, visited: Set[Any]=None, order: List[Any]=None) -> List[Any]:
+
+    if visited is None:
+        visited = set()
+    if order is None:
+        order = []
+    visited.add(start)
+    order.append(start)
+    for nbr in graph.get(start, []):
+        if nbr not in visited:
+            dfs_recursive(graph, nbr, visited, order)
+    return order
+
+def bfs_recursive_style(graph: Dict[Any, List[Any]], start: Any) -> List[Any]:
+   
+    visited = {start}
+    order = [start]
+    frontier = [start]
+
+    def _recurse(frontier):
+        if not frontier:
+            return
+        next_frontier = []
+        for u in frontier:
+            for v in graph.get(u, []):
+                if v not in visited:
+                    visited.add(v)
+                    order.append(v)
+                    next_frontier.append(v)
+        _recurse(next_frontier)
+
+    _recurse(frontier)
+    return order
+
+if __name__ == "__main__":
+    # Example undirected graph
+    G = {
+        'A': ['B', 'C'],
+        'B': ['A', 'D', 'E'],
+        'C': ['A', 'F'],
+        'D': ['B'],
+        'E': ['B', 'F'],
+        'F': ['C', 'E']
+    }
+
+    print("DFS (recursive) from A:", dfs_recursive(G, 'A'))
+    print("BFS (recursive-style) from A:", bfs_recursive_style(G, 'A'))
