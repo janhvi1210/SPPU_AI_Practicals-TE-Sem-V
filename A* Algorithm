@@ -1,0 +1,55 @@
+# src/astar_grid.py
+import heapq
+from typing import List, Tuple, Dict, Optional
+
+Grid = List[List[int]]  # 0 = free, 1 = blocked
+Point = Tuple[int, int]
+
+def neighbors(grid: Grid, node: Point):
+    rows, cols = len(grid), len(grid[0])
+    r, c = node
+    for dr, dc in ((1,0),(-1,0),(0,1),(0,-1)):
+        nr, nc = r+dr, c+dc
+        if 0 <= nr < rows and 0 <= nc < cols and grid[nr][nc] == 0:
+            yield (nr, nc)
+
+def manhattan(a: Point, b: Point) -> int:
+    return abs(a[0]-b[0]) + abs(a[1]-b[1])
+
+def astar(grid: Grid, start: Point, goal: Point) -> Optional[List[Point]]:
+    open_heap = []
+    heapq.heappush(open_heap, (0 + manhattan(start, goal), 0, start))  # (f, g, node)
+    came_from: Dict[Point, Optional[Point]] = {start: None}
+    gscore = {start: 0}
+
+    while open_heap:
+        f, g, current = heapq.heappop(open_heap)
+        if current == goal:
+            # reconstruct path
+            path = []
+            node = current
+            while node is not None:
+                path.append(node)
+                node = came_from[node]
+            return list(reversed(path))
+        for nbr in neighbors(grid, current):
+            tentative_g = g + 1
+            if tentative_g < gscore.get(nbr, float('inf')):
+                came_from[nbr] = current
+                gscore[nbr] = tentative_g
+                heapq.heappush(open_heap, (tentative_g + manhattan(nbr, goal), tentative_g, nbr))
+    return None
+
+# --- demo ---
+if __name__ == "__main__":
+    grid = [
+        [0,0,0,0,0],
+        [0,1,1,1,0],
+        [0,0,0,1,0],
+        [0,1,0,0,0],
+        [0,0,0,1,0]
+    ]
+    start = (0,0)
+    goal = (4,4)
+    path = astar(grid, start, goal)
+    print("Path:", path)
