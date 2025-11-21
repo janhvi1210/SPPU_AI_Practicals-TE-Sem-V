@@ -27,16 +27,8 @@ def alpha_beta(depth, index, is_max_player, leaf_values, alpha, beta):
                 break
         return best
 
-
-leaf_values= [3, 5, 6, 9, 1, 2, 0, -1]  # concrete leaf values
-depth = 3
-result = alpha_beta(depth, 0, True, leaf_values, -math.inf, math.inf)
-print("Optimal value:", result)
-
-
 depth = int(input("Enter the depth of the tree: "))
 
-# Calculate how many leaves there should be
 num_leaves = 2 ** depth
 
 # Ask for leaf values
