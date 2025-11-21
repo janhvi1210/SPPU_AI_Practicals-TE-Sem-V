@@ -1,0 +1,52 @@
+import math
+
+def alpha_beta(depth, index, is_max_player, leaf_values, alpha, beta):
+    # If we've reached the bottom, return the leaf value
+    if depth == 0 :
+        return leaf_values[index]
+
+    if is_max_player:
+        best = -math.inf
+        # two children: left (index*2) and right (index*2 + 1)
+        for child_offset in (0, 1):
+            child_index = index * 2 + child_offset
+            val = alpha_beta(depth - 1, child_index, False, leaf_values, alpha, beta)
+            best = max(best, val)
+            alpha = max(alpha, val)
+            if beta <= alpha:   # prune
+                break
+        return best
+    else:
+        best = math.inf
+        for child_offset in (0, 1):
+            child_index = index * 2 + child_offset
+            val = alpha_beta(depth - 1, child_index, True, leaf_values, alpha, beta)
+            best = min(best, val)
+            beta = min(beta, val)
+            if beta <= alpha:  # prune
+                break
+        return best
+
+
+leaf_values= [3, 5, 6, 9, 1, 2, 0, -1]  # concrete leaf values
+depth = 3
+result = alpha_beta(depth, 0, True, leaf_values, -math.inf, math.inf)
+print("Optimal value:", result)
+
+
+depth = int(input("Enter the depth of the tree: "))
+
+# Calculate how many leaves there should be
+num_leaves = 2 ** depth
+
+# Ask for leaf values
+print(f"Enter {num_leaves} leaf values separated by spaces:")
+leaf_values = list(map(int, input().split()))
+
+# Validate
+if len(leaf_values) != num_leaves:
+    print(f"Error: You must enter exactly {num_leaves} values.")
+else:
+    result = alpha_beta(depth, 0, True, leaf_values, -math.inf, math.inf)
+    print("Optimal value:", result)
+
