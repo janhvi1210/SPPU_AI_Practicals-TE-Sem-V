@@ -32,6 +32,7 @@ depth = int(input("Enter the depth of the tree: "))
 
 num_leaves = 2 ** depth
 
+#Ask for leaf values
 print(f"Enter {num_leaves} leaf values separated by spaces:")
 leaf_values = list(map(int, input().split()))
 
