@@ -27,6 +27,7 @@ def alpha_beta(depth, index, is_max_player, leaf_values, alpha, beta):
                 break
         return best
 
+#Taking user input
 depth = int(input("Enter the depth of the tree: "))
 
 num_leaves = 2 ** depth
